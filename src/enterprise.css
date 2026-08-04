@@ -880,7 +880,7 @@
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.4);
+    background: rgba(15, 23, 42, 0.45);
     z-index: 40;
     opacity: 0;
     pointer-events: none;
@@ -896,14 +896,19 @@
     z-index: 50;
     transform: translateX(-105%);
     transition: transform 0.22s ease;
-    width: min(280px, 86vw);
+    width: min(300px, 88vw) !important;
+    max-width: 320px;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
     box-shadow: var(--crm-shadow);
+    overflow: hidden;
   }
   .ent-shell.ent-nav-open .ent-sidebar {
     transform: translateX(0);
   }
   .ent-shell.ent-collapsed .ent-sidebar {
-    width: min(280px, 86vw);
+    width: min(300px, 88vw) !important;
   }
   .ent-shell.ent-collapsed .ent-brand-copy,
   .ent-shell.ent-collapsed .ent-nav-group-label,
@@ -912,6 +917,71 @@
     display: flex;
   }
   .ent-shell.ent-collapsed .ent-nav-text { display: inline; }
+  .ent-shell.ent-collapsed .crm-nav-item {
+    width: 100%;
+    height: auto;
+    min-height: 40px;
+    justify-content: flex-start;
+    padding: 9px 12px;
+    margin: 0;
+  }
   .ent-collapse-btn { display: none; }
   .ent-kbd { display: none; }
+
+  .ent-cmd-trigger {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    height: 40px;
+    padding: 0 10px;
+    justify-content: center;
+  }
+  .ent-cmd-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ent-topbar {
+    gap: 8px;
+  }
+
+  .ent-page-head {
+    padding-inline: 0;
+  }
+
+  .cmd-panel {
+    width: min(100vw - 16px, 520px);
+    max-height: min(78dvh, 640px);
+    margin: 8px;
+  }
+
+  .cmd-root {
+    align-items: flex-start;
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+}
+
+@media (max-width: 560px) {
+  .ent-cmd-label { display: none; }
+  .ent-cmd-trigger {
+    flex: 0 0 auto;
+    width: 40px;
+    max-width: 40px;
+    padding: 0;
+    border-radius: 12px;
+  }
+  .ent-cmd-trigger .crm-search-icon { margin: 0; }
+
+  .ent-wizard-steps,
+  .ent-detail-grid,
+  .ent-split-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ui-page-header,
+  .ent-page-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

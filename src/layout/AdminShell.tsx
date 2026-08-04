@@ -158,6 +158,15 @@ export default function AdminShell() {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (!navOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [navOpen]);
+
+  useEffect(() => {
     const n = loadNotifications().filter((x) => !x.read).length;
     setUnread(n);
   }, [location.pathname]);
@@ -290,7 +299,7 @@ export default function AdminShell() {
             aria-label="Open command palette"
           >
             <IconSearch className="crm-search-icon" />
-            <span>Search or jump to…</span>
+            <span className="ent-cmd-label">Search or jump to…</span>
             <kbd className="ent-kbd">⌘K</kbd>
           </button>
 
