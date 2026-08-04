@@ -1,0 +1,77 @@
+# Build on every push/PR. On main, also trigger a Render deploy.
+#
+# Why CI exists: if Render Auto-Deploy is "After CI Checks Pass" and this repo
+# has no GitHub checks, Render never deploys. This workflow supplies that check.
+#
+# Deploy hook (recommended backup / when Auto-Deploy is Off):
+# 1. Render Dashboard → call-ui service → Settings → Deploy Hook → copy URL
+# 2. GitHub → call_ui → Settings → Secrets and variables → Actions
+# 3. New secret: RENDER_DEPLOY_HOOK_URL = that URL
+#
+# Also confirm in Render Settings:
+# - Auto-Deploy: On Commit  OR  After CI Checks Pass
+# - Branch: main
+# - Build: npm install && npm run build
+# - Publish directory: dist
+# - Env: VITE_API_BASE_URL=https://wc-call.13.232.129.80.nip.io
+
+name: Build and deploy Render
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: render-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        env:
+          VITE_API_BASE_URL: https://wc-call.13.232.129.80.nip.io
+        run: npm run build
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy hook
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_HOOK:-}" ]; then
+            echo "::notice::RENDER_DEPLOY_HOOK_URL secret is not set."
+            echo "If Render Auto-Deploy is 'After CI Checks Pass', this successful CI run should start the deploy."
+            echo "If Auto-Deploy is Off, add the Deploy Hook URL as secret RENDER_DEPLOY_HOOK_URL."
+            exit 0
+          fi
+          echo "Triggering Render deploy…"
+          # Prefer deploying this exact commit when the hook supports ?ref=
+          url="$DEPLOY_HOOK"
+          case "$url" in
+            *\?*) url="${url}&ref=${GITHUB_SHA}" ;;
+            *)    url="${url}?ref=${GITHUB_SHA}" ;;
+          esac
+          curl -fsS -X POST "$url"
+          echo
+          echo "Deploy requested for ${GITHUB_SHA}"
