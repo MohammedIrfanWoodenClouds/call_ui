@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import type { Enquiry } from "../lib/enquiryApi";
 import { saveEnquiry } from "../lib/enquiryApi";
 import { adminFetchEnquiries } from "../lib/adminAuth";
@@ -14,7 +15,6 @@ import {
   saveContactTags,
   type ContactTagMap,
 } from "../lib/localStore";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { ConfirmDialog } from "../ui/Modal";
 import { Badge, Panel } from "../ui/Page";
@@ -24,7 +24,7 @@ import { EmptyState, ErrorState, LoadingState } from "../ui/States";
 const PAGE_SIZE = 12;
 
 export default function ContactsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [rows, setRows] = useState<Enquiry[]>([]);
   const [tags, setTags] = useState<ContactTagMap>({});

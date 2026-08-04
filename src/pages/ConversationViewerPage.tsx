@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchCalls, type MimicCall } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Badge, Panel } from "../ui/Page";
 import { Pagination, usePaged } from "../ui/Pagination";
 import { EmptyState, ErrorState, LoadingState } from "../ui/States";
@@ -9,7 +9,7 @@ import { EmptyState, ErrorState, LoadingState } from "../ui/States";
 const PAGE_SIZE = 10;
 
 export default function ConversationViewerPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [params, setParams] = useSearchParams();
   const [calls, setCalls] = useState<MimicCall[]>([]);
   const [loading, setLoading] = useState(true);

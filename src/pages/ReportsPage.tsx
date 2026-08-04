@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchCalls, adminFetchEnquiries, adminFetchStats } from "../lib/adminAuth";
 import {
   downloadCsv,
@@ -8,14 +8,13 @@ import {
   downloadXlsxCompatible,
 } from "../lib/exportUtils";
 import { loadAgents, loadCampaigns, loadReports, saveReports, uid, type SavedReport } from "../lib/localStore";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { ConfirmDialog, Modal } from "../ui/Modal";
 import { Badge, Panel } from "../ui/Page";
 import { EmptyState, LoadingState } from "../ui/States";
 
 export default function ReportsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [reports, setReports] = useState<SavedReport[]>(() => loadReports());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

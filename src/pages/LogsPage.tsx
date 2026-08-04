@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchLogs } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 
 function fmtDateTime(iso?: string): string {
   if (!iso) return "—";
@@ -15,7 +14,7 @@ function toNonNullString(v: unknown): string {
 }
 
 export default function LogsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [logs, setLogs] = useState<any[]>([]);
   const [logSessionId, setLogSessionId] = useState("");
   const [logLimit, setLogLimit] = useState(200);

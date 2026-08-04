@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { saveEnquiry } from "../lib/enquiryApi";
 import { parseDelimited } from "../lib/exportUtils";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { Panel } from "../ui/Page";
 import { EmptyState } from "../ui/States";
@@ -22,7 +22,7 @@ type TargetKey = (typeof TARGET_FIELDS)[number]["key"];
 type Step = "upload" | "map" | "preview" | "done";
 
 export default function ImportWizardPage() {
-  const { token: _token } = useOutletContext<AuthOutletContext>();
+  const { token: _token } = useAdminAuth();
   void _token;
   const [step, setStep] = useState<Step>("upload");
   const [fileName, setFileName] = useState("");

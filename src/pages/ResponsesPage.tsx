@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import {
   adminFetchResponses,
   type Disposition,
   type FlatResponse,
   type ResponseMark,
 } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 
 function fmtDateTime(iso?: string): string {
   if (!iso) return "—";
@@ -15,7 +15,7 @@ function fmtDateTime(iso?: string): string {
 }
 
 export default function ResponsesPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [responses, setResponses] = useState<FlatResponse[]>([]);
   const [marks, setMarks] = useState<ResponseMark[]>([]);
   const [dispositions, setDispositions] = useState<Disposition[]>([]);

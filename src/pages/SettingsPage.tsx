@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { clearAdminToken } from "../lib/adminAuth";
 import { exportCsvUrl } from "../lib/enquiryApi";
 import { apiUrl } from "../lib/apiBase";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import type { Voice } from "../types";
 import { useTheme } from "../theme/ThemeProvider";
 import { Button } from "../ui/Button";
 
 export default function SettingsPage() {
-  const { email } = useOutletContext<AuthOutletContext>();
+  const { email } = useAdminAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [voice, setVoice] = useState<Voice>("mal-female");

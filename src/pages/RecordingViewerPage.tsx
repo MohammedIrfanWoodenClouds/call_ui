@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchCalls, type MimicCall } from "../lib/adminAuth";
 import { downloadJson, downloadPdfReport } from "../lib/exportUtils";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { Badge, Panel } from "../ui/Page";
 import { EmptyState, ErrorState, LoadingState } from "../ui/States";
 
 export default function RecordingViewerPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [params, setParams] = useSearchParams();
   const [calls, setCalls] = useState<MimicCall[]>([]);
   const [loading, setLoading] = useState(true);

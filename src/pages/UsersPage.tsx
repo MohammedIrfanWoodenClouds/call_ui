@@ -1,7 +1,6 @@
-import { useOutletContext } from "react-router-dom";
 import { useMemo, useState } from "react";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { loadUsers, saveUsers, uid, type CrmUser } from "../lib/localStore";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { ConfirmDialog, Modal } from "../ui/Modal";
 import { Badge, Panel } from "../ui/Page";
@@ -15,7 +14,7 @@ const ROLE_TONE: Record<CrmUser["role"], "accent" | "info" | "success" | "neutra
 };
 
 export default function UsersPage() {
-  const { email } = useOutletContext<AuthOutletContext>();
+  const { email } = useAdminAuth();
   const [users, setUsers] = useState<CrmUser[]>(() => loadUsers(email));
   const [q, setQ] = useState("");
   const [modalOpen, setModalOpen] = useState(false);

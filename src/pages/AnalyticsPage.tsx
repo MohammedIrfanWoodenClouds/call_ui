@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchCalls, adminFetchStats, type AdminStats, type MimicCall } from "../lib/adminAuth";
 import { DualLineChart, DonutChart } from "../components/Charts";
 import {
@@ -8,13 +8,12 @@ import {
   downloadPdfReport,
   downloadXlsxCompatible,
 } from "../lib/exportUtils";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { Panel } from "../ui/Page";
 import { ErrorState, LoadingState } from "../ui/States";
 
 export default function AnalyticsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [calls, setCalls] = useState<MimicCall[]>([]);
   const [loading, setLoading] = useState(true);

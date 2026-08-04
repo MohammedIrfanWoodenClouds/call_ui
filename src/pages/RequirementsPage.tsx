@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useOutletContext, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import type { Enquiry } from "../lib/enquiryApi";
 import { exportCsvUrl, requirementsDisplay } from "../lib/enquiryApi";
 import { adminFetchEnquiries } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 
 function fmtDateTime(iso?: string): string {
   if (!iso) return "—";
@@ -12,7 +12,7 @@ function fmtDateTime(iso?: string): string {
 }
 
 export default function RequirementsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);

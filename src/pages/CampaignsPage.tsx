@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchEnquiries } from "../lib/adminAuth";
 import {
   loadAgents,
@@ -9,7 +10,6 @@ import {
   type Campaign,
   type CampaignStatus,
 } from "../lib/localStore";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Button } from "../ui/Button";
 import { ConfirmDialog, Modal } from "../ui/Modal";
 import { Badge, Panel } from "../ui/Page";
@@ -27,7 +27,7 @@ const STATUS_TONE: Record<CampaignStatus, "neutral" | "info" | "success" | "warn
 };
 
 export default function CampaignsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [params, setParams] = useSearchParams();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [contactCount, setContactCount] = useState(0);

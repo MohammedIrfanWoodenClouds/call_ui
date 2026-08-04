@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchCalls, type MimicCall } from "../lib/adminAuth";
 import { loadCampaigns } from "../lib/localStore";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Badge, Panel } from "../ui/Page";
 import { EmptyState, ErrorState, LoadingState } from "../ui/States";
 
@@ -13,7 +13,7 @@ function isRecent(iso: string, minutes = 30): boolean {
 }
 
 export default function LiveCallsPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [calls, setCalls] = useState<MimicCall[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

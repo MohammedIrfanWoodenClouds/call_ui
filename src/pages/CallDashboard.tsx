@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useOutletContext, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import {
   adminFetchCalls,
   adminMarkTurn,
@@ -9,7 +10,6 @@ import {
   type MimicCall,
   type ResponseMark,
 } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 
 const DISPOSITIONS: { id: Disposition; label: string }[] = [
   { id: "interested", label: "Interested" },
@@ -42,7 +42,7 @@ function dispositionLabel(d: string): string {
 }
 
 export default function CallDashboard() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [calls, setCalls] = useState<MimicCall[]>([]);

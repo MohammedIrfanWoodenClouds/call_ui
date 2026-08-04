@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchStats, type AdminStats } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { DonutChart, DualLineChart, Sparkline, pctChange } from "../components/Charts";
 
 function fmtDateTime(iso?: string): string {
@@ -11,7 +11,7 @@ function fmtDateTime(iso?: string): string {
 }
 
 export default function DashboardPage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

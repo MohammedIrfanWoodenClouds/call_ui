@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAdminAuth } from "../lib/useAdminAuth";
 import { adminFetchCalls, adminFetchLogs, type MimicCall } from "../lib/adminAuth";
-import type { AuthOutletContext } from "../layout/RequireAuth";
 import { Badge, Panel } from "../ui/Page";
 import { Pagination, usePaged } from "../ui/Pagination";
 import { EmptyState, ErrorState, LoadingState } from "../ui/States";
@@ -18,7 +18,7 @@ type TimelineEvent = {
 const PAGE_SIZE = 20;
 
 export default function CallTimelinePage() {
-  const { token } = useOutletContext<AuthOutletContext>();
+  const { token } = useAdminAuth();
   const [params] = useSearchParams();
   const [calls, setCalls] = useState<MimicCall[]>([]);
   const [events, setEvents] = useState<any[]>([]);
