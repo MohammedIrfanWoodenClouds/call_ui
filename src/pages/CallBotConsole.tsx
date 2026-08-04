@@ -56,14 +56,19 @@ function VoiceOrb({
   agentSpeaking,
   learnerSpeaking,
   active,
+  onStart,
+  starting,
 }: {
   agentSpeaking: boolean;
   learnerSpeaking: boolean;
   active: boolean;
+  onStart?: () => void;
+  starting?: boolean;
 }) {
   const state = !active ? "idle" : learnerSpeaking ? "listening" : agentSpeaking ? "speaking" : "ready";
-  return (
-    <div className={`bot-orb bot-orb-${state}`} aria-hidden>
+  const canStart = !active && !!onStart;
+  const inner = (
+    <>
       <div className="bot-orb-ring bot-orb-ring-a" />
       <div className="bot-orb-ring bot-orb-ring-b" />
       <div className="bot-orb-core">
@@ -75,6 +80,26 @@ function VoiceOrb({
           <i />
         </span>
       </div>
+    </>
+  );
+
+  if (canStart) {
+    return (
+      <button
+        type="button"
+        className={`bot-orb bot-orb-${state} bot-orb-btn`}
+        onClick={onStart}
+        disabled={starting}
+        aria-label={starting ? "Connecting call" : "Start call"}
+      >
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <div className={`bot-orb bot-orb-${state}`} aria-hidden>
+      {inner}
     </div>
   );
 }
@@ -91,10 +116,19 @@ export default function CallBotConsole({ embedded = false }: { embedded?: boolea
   const [loadError, setLoadError] = useState<string | null>(null);
   const [enquiry, setEnquiry] = useState<Partial<Enquiry> | null>(null);
   const [recent, setRecent] = useState<Enquiry[]>([]);
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
   const enquiryIdRef = useRef<string | undefined>(undefined);
   const conversationRef = useRef(new ConversationStateManager());
 
   const session = useVoiceSession();
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 981px)");
+    const sync = () => setEnquiryOpen(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -273,16 +307,7 @@ export default function CallBotConsole({ embedded = false }: { embedded?: boolea
           <p className="muted">Loading call bot…</p>
         </div>
       ) : (
-        <div className="bot-stage">
-          <aside className="bot-side bot-side-card">
-            <div className="bot-side-head">
-              <h2>Live enquiry</h2>
-              <span className="muted">Captured fields</span>
-            </div>
-            <EnquiryCard enquiry={enquiry} recent={recent} />
-            <LatencyTable latency={session.latency} />
-          </aside>
-
+        <div className={`bot-stage${session.active ? " is-live" : ""}`}>
           <section className="bot-center">
             <div className="bot-status-pill" data-state={statusLabel.toLowerCase()}>
               <span className="bot-status-dot" />
@@ -293,15 +318,18 @@ export default function CallBotConsole({ embedded = false }: { embedded?: boolea
               active={session.active}
               agentSpeaking={session.agentSpeaking}
               learnerSpeaking={session.learnerSpeaking}
+              onStart={() => void startSession()}
+              starting={session.status === "connecting"}
             />
 
             {!session.active ? (
               <div className="bot-ready">
                 <h2>Start a voice enquiry</h2>
-                <p>
+                <p className="bot-ready-copy">
                   Choose Website, E-commerce, or ERP. {agentName} collects details and confirms a
                   callback.
                 </p>
+                <p className="bot-ready-tap">Tap the orb or Start call below</p>
                 <label className="bot-voice-pick">
                   Agent voice
                   <select
@@ -321,7 +349,7 @@ export default function CallBotConsole({ embedded = false }: { embedded?: boolea
                   </select>
                 </label>
                 <button
-                  className="bot-cta"
+                  className="bot-cta bot-cta-inline"
                   type="button"
                   onClick={() => void startSession()}
                   disabled={session.status === "connecting"}
@@ -348,6 +376,36 @@ export default function CallBotConsole({ embedded = false }: { embedded?: boolea
               </div>
             )}
           </section>
+
+          <aside className="bot-side bot-side-card">
+            <details
+              className="bot-enquiry-fold"
+              open={enquiryOpen}
+              onToggle={(e) => setEnquiryOpen((e.target as HTMLDetailsElement).open)}
+            >
+              <summary className="bot-side-head bot-enquiry-summary">
+                <span>
+                  <h2>Live enquiry</h2>
+                  <span className="muted">Captured fields</span>
+                </span>
+              </summary>
+              <EnquiryCard enquiry={enquiry} recent={recent} />
+              <LatencyTable latency={session.latency} />
+            </details>
+          </aside>
+
+          {!session.active ? (
+            <div className="bot-mobile-cta" role="region" aria-label="Start call">
+              <button
+                className="bot-cta"
+                type="button"
+                onClick={() => void startSession()}
+                disabled={session.status === "connecting"}
+              >
+                {session.status === "connecting" ? "Connecting…" : "Start call"}
+              </button>
+            </div>
+          ) : null}
         </div>
       )}
     </div>
