@@ -16,7 +16,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@wc/speech": ["../packages/speech/src/index.ts"]
+      "@wc/speech": ["./packages/speech/src/index.ts"]
     }
   },
   "include": ["src"]

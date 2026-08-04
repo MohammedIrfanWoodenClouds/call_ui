@@ -14,7 +14,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@wc/speech": path.resolve(rootDir, "../packages/speech/src/index.ts"),
+      "@wc/speech": path.resolve(rootDir, "packages/speech/src/index.ts"),
     },
   },
   server: {
