@@ -133,7 +133,10 @@ function pathMeta(pathname: string) {
 }
 
 export default function AdminShell() {
-  const { email } = useOutletContext<AuthOutletContext>();
+  // Pathless layout sits between RequireAuth's Outlet and page Outlets —
+  // context is not inherited; forward auth so pages can use useOutletContext.
+  const auth = useOutletContext<AuthOutletContext>();
+  const { email } = auth;
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
@@ -333,7 +336,7 @@ export default function AdminShell() {
         )}
 
         <div className={`crm-content${isBot ? " crm-content-bot" : ""}`}>
-          <Outlet />
+          <Outlet context={auth} />
         </div>
       </div>
 
